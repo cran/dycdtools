@@ -32,7 +32,7 @@
 #'  data(obs_temp)
 #'
 #' # scatter plot of sim and obs temperature
-#'  scatter.plot(sim=temp.interpolated,
+#'  plot_scatter(sim=temp.interpolated,
 #'               obs=obs_temp,
 #'               sim.start="2017-06-06",
 #'               sim.end="2017-06-15",
@@ -44,7 +44,7 @@
 #'
 #' @export
 
-scatter.plot<-function(sim=temp.interpolated,
+plot_scatter<-function(sim=temp.interpolated,
                        obs=obs.temp,
                        sim.start="2017-06-06",
                        sim.end="2020-02-29",
@@ -85,8 +85,6 @@ scatter.plot<-function(sim=temp.interpolated,
   #---
   # 3.report two objective functions' value and scatter plot sim vs. obs
   #---
-  #message(NSE(temp.both$sim,obs=temp.both$obs))   #NSE
-  #message(sqrt(mean((temp.both$sim-temp.both$obs)^2,na.rm = TRUE)))  # RMSE
 
   p<-temp.both%>%
     ggplot(aes(x=obs,y=sim,colour=Depth))+
