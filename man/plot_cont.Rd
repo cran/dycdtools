@@ -2,7 +2,7 @@
 % Please edit documentation in R/Fun_Contour-plot_sim.R
 \name{plot_cont}
 \alias{plot_cont}
-\title{Contour plot of a variable simulation, with observed data shown as dots in the generated contour plot.}
+\title{Contour plot of simulation results of a bio-geochemical variable.}
 \usage{
 plot_cont(
   sim = temp.interpolated,
@@ -43,7 +43,7 @@ plot_cont(
 a graph file of contour plot saved in the Figure folder.
 }
 \description{
-Contour plot a matrix of a bio-geochemical variable values, which can be generated through "interpol" function.
+Contour plot a matrix of values of a bio-geochemical variable, which can be generated through "interpol" function.
 }
 \examples{
  # extract simulated temperature values from DYRESM-CAEDYM simulation file

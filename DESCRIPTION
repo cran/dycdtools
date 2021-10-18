@@ -1,7 +1,7 @@
 Package: dycdtools
 Title: Tools for DYRESM-CAEDYM Model Development: Calibration Assistant
         and Post-Processing
-Version: 0.3.0
+Version: 0.3.1
 Authors@R: c( 
     person(given = "Songyan",
            family = "Yu",
@@ -26,10 +26,10 @@ RoxygenNote: 7.1.1
 Depends: R (>= 2.10)
 Suggests: testthat
 NeedsCompilation: no
-Packaged: 2021-09-19 03:40:14 UTC; s2974665
+Packaged: 2021-10-14 10:03:24 UTC; s2974665
 Author: Songyan Yu [aut, cre] (<https://orcid.org/0000-0001-5765-7060>),
   Christopher McBride [ctb],
   Marieke Frassl [ctb]
 Maintainer: Songyan Yu <sunny.yu@griffith.edu.au>
 Repository: CRAN
-Date/Publication: 2021-09-19 04:40:06 UTC
+Date/Publication: 2021-10-18 04:10:02 UTC
