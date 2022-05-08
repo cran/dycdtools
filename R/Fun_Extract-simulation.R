@@ -9,12 +9,13 @@
 #'    Options include TEMP, DO, TP, NO3, NH4, TN, CHLA, FDIAT, SSOL1, SSOL2, and PO4.
 #'    Apart from nominated variables, simulation period and layer height data are also extracted.
 #'    For a full list of variables that can be extracted, use "data("output_name")".
+#' @param verbose if TRUE, the information on extraction of simulation outputs is printed.
 #'
 #' @import ncdf4
 #'
 #' @examples
 #'  # extract simulated temperature values from DYRESM-CAEDYM simulation file
-#'  var.values<-ext.output(dycd.output=system.file("extdata", "dysim.nc", package = "dycdtools"),
+#'  var.values<-ext_output(dycd.output=system.file("extdata", "dysim.nc", package = "dycdtools"),
 #'                        var.extract=c("TEMP"))
 #'
 #'  for(i in 1:length(var.values)){
@@ -27,17 +28,20 @@
 #' @export
 #'
 
-ext.output<-function(dycd.output="data/dysim.nc",
-                     var.extract=c("TEMP","DO","TP","TN","NO3","NH4","CHLA")){
+ext_output<-function(dycd.output,
+                     var.extract,
+                     verbose = FALSE){
 
 
   simData <- nc_open(dycd.output)
   varNames <- names(simData$var)
 
-  message("You are going to extract ",length(var.extract)," variables.\n")
+  if(verbose){
+    message("You are going to extract ",length(var.extract)," variable(s).\n")
+  }
 
   if(any(is.na(match(var.extract,output_name$var.name)))){
-    message(var.extract[is.na(match(var.extract,output_name$var.name))],"are not on the optional variable list.\n")
+    message(var.extract[is.na(match(var.extract,output_name$var.name))],"is(are) not on the optional variable list.\n")
   }
 
   actual.var<-as.character(na.omit(output_name$output.name[match(var.extract,output_name$var.name)]))
@@ -47,9 +51,19 @@ ext.output<-function(dycd.output="data/dysim.nc",
     actual.var<-unique(actual.var)
   }
 
-  actual.var<-append(actual.var,c("dyresmTime","dyresmLAYER_HTS_Var")) # add compulsory variables
+  if(!all(actual.var %in% varNames)){
 
-  var.values<-lapply(actual.var,FUN = function(x) ncvar_get(simData,varNames[which(varNames==x)]))
+    if(verbose){
+      message('but ', paste0(var.extract[which(!(actual.var %in% varNames))], sep = ' '), ' not in the model outputs!\n')
+      message('Only ',paste0(var.extract[which(actual.var %in% varNames)], sep = ' '), 'get(s) extracted!\n')
+    }
+
+    actual.var <- actual.var[actual.var %in% varNames]
+  }
+
+  actual.var <- append(actual.var,c("dyresmTime","dyresmLAYER_HTS_Var")) # add compulsory variables
+
+  var.values <- lapply(actual.var, FUN = function(x) ncvar_get(simData, varNames[which(varNames==x)]))
   nc_close(simData)
   names(var.values)<-actual.var
   var.values[["dyresmTime"]]<-var.values[["dyresmTime"]]-450275

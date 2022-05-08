@@ -9,17 +9,14 @@
 #' @param plot.start,plot.end the beginning and ending dates for the plotting purpose. The date format must be "\%Y-\%m-\%d".
 #' @param xlabel the x axis label of the profile figure
 #' @param min.depth,max.depth,by.value minimum and maximum depth for the profile plot at the depth increment of by.value.
-#' @param plot.save if TRUE, the plot is saved with the "height","width", and "ppi" parameters.
-#' @param file_name the file path to save the generated profile figure
-#' @param height,width the height and width of the profile figure.
 #'
 #' @import dplyr
 #' @import ggplot2
 #'
-#' @return a profile plot of sim~depth
+#' @return This function returns a ggplot object that can be modified with ggplot package functions.
 #'
 #' @examples
-#'  var.values<-ext.output(dycd.output=system.file("extdata", "dysim.nc", package = "dycdtools"),
+#'  var.values<-ext_output(dycd.output=system.file("extdata", "dysim.nc", package = "dycdtools"),
 #'                        var.extract=c("TEMP"))
 #'
 #'  for(i in 1:length(var.values)){
@@ -34,7 +31,7 @@
 #'
 #'  data(obs_temp)
 #' # profile plot of temperature sim and obs
-#'   plot_prof(sim=temp.interpolated,
+#'   p <- plot_prof(sim=temp.interpolated,
 #'             obs = obs_temp,
 #'             sim.start="2017-06-06",
 #'             sim.end="2017-06-15",
@@ -42,20 +39,20 @@
 #'             plot.end="2017-06-15",
 #'             xlabel = "Temperature \u00B0C",
 #'             min.depth = 0,max.depth = 13,by.value = 0.5)
+#'  p
 #'
 #' @export
 
-plot_prof<-function(sim=temp.interpolated,
-                    obs=obs.temp,
-                    sim.start="2017-06-06",
-                    sim.end="2020-02-29",
-                    plot.start="2017-06-06",
-                    plot.end="2020-02-29",
-                    xlabel="Temperature \u00B0C",
-                    min.depth=0,max.depth,by.value,
-                    plot.save=FALSE,
-                    file_name,
-                    height=11,width=18){
+plot_prof<-function(sim,
+                    obs,
+                    sim.start,
+                    sim.end,
+                    plot.start,
+                    plot.end,
+                    xlabel,
+                    min.depth,
+                    max.depth,
+                    by.value){
 
   #---
   # 1. simulation period
@@ -86,20 +83,16 @@ plot_prof<-function(sim=temp.interpolated,
   #---
   # 3. profile plot sim vs. obs, faceted by Date
   #---
-  p<-temp.both%>%
-    ggplot()+
-    geom_point(aes(y=Depth,x=obs),col="red")+
-    geom_path(aes(y=Depth,x=sim))+
-    facet_wrap(~Date)+
-    ylim(max.depth,min.depth)+
-    xlab(xlabel)+
-    ylab("Depth (m)")+
+  p <- temp.both %>%
+    ggplot() +
+    geom_point(aes(y = Depth, x = obs), col = "red") +
+    geom_path(aes(y = Depth, x = sim)) +
+    facet_wrap(~Date) +
+    ylim(max.depth, min.depth) +
+    xlab(xlabel) +
+    ylab("Depth (m)") +
     theme_classic()
 
-  plot(p)
-
-  if(plot.save){
-    ggsave(filename = file_name,height = height,width = width)
-  }
+  return(p)
 }
 

@@ -4,9 +4,10 @@
 #' @param row_no the number of row where the variable of interest is in the input file
 #' @param new_value the new value that will be assigned to the variable of interest.
 #'
+#' @export
 
-change_input_file<-function(input_file="par",
-                            row_no=12,
+change_input_file<-function(input_file,
+                            row_no,
                             new_value){
   #---
   # 1. read in input file.
@@ -17,7 +18,7 @@ change_input_file<-function(input_file="par",
   #2. remove all proceeding whitespace in the line of interest.
   #---
   extract_val <- unlist(strsplit(par_data[row_no], split = " "))
-  extract_val<-delete.space(extract_val)
+  extract_val <- delete_space(extract_val)
 
   #---
   # 3. replace old value with new value, and update the input file.
