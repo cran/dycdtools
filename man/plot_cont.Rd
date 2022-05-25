@@ -2,7 +2,7 @@
 % Please edit documentation in R/Fun_Contour-plot_sim.R
 \name{plot_cont}
 \alias{plot_cont}
-\title{Contour plot of simulation results of a bio-geochemical variable.}
+\title{Contour plot of only simulation results of a water quality variable.}
 \usage{
 plot_cont(
   sim,
@@ -16,44 +16,39 @@ plot_cont(
 )
 }
 \arguments{
-\item{sim}{a matrix of simulated variables that have been interpolated}
+\item{sim}{a matrix of simulated variables. This matrix can be generated
+by running the "interpol" function.}
 
-\item{sim.start, sim.end}{the start and end of the simulation period for the DYRESM-CAEDYM model run of interest. The date format must be "\%Y-\%m-\%d".}
+\item{sim.start, sim.end}{the start and end dates of the simulation period
+for the DYRESM-CAEDYM model run of interest.
+The date format must be "\%Y-\%m-\%d".}
 
 \item{legend.title}{the legend title of the contour figure.}
 
-\item{min.depth, max.depth, by.value}{minimum and maximum depth used to be the start of y axis of the contour plot, at the increment of by.value.}
+\item{min.depth, max.depth, by.value}{minimum and maximum depths used to be
+the start of y axis of the contour plot, at the increment of by.value.}
 
-\item{nlevels}{a set of levels which are used to partition the range of simulation variable.}
+\item{nlevels}{Number of levels which are used to partition the range of
+simulation variable.}
 }
 \value{
 This function returns a filled.contour object.
 }
 \description{
-Contour plot a matrix of values of a bio-geochemical variable, which can be generated through "interpol" function.
+Contour plot a matrix of values of a water quality variable,
 }
 \examples{
- # extract simulated temperature values from DYRESM-CAEDYM simulation file
- var.values<-ext_output(dycd.output=system.file("extdata", "dysim.nc", package = "dycdtools"),
-                       var.extract=c("TEMP"))
+sim <- matrix(c(28,28,28,27,25,24,12,13,14,15,16,17),
+              nrow = 6,
+              ncol = 2)
 
- for(i in 1:length(var.values)){
-  expres<-paste0(names(var.values)[i],"<-data.frame(var.values[[",i,"]])")
-  eval(parse(text=expres))
- }
-
-# interpolate temperature for depths from 0 to 13 m at increment of 0.5 m
-  temp.interpolated<-interpol(layerHeights = dyresmLAYER_HTS_Var,
-                             var = dyresmTEMPTURE_Var,
-                             min.dept = 0,max.dept = 13,by.value = 0.5)
-
-# contour plot of temperature simulations
-  p <- plot_cont(sim=temp.interpolated,
-            sim.start="2017-06-06",
-            sim.end="2017-06-15",
-            legend.title="T \u00B0C",
-            min.depth=0,max.depth=13,by.value=0.5,
-            nlevels=20)
+# contour plot of the sim data frame
+  p <- plot_cont(sim = sim,
+            sim.start = "2020-01-01",
+            sim.end = "2020-01-02",
+            legend.title = "T \u00B0C",
+            min.depth = 0, max.depth = 5, by.value = 1,
+            nlevels = 20)
 
   p
 

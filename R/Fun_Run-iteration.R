@@ -1,6 +1,9 @@
-#' Internal function to provide parallel processing support to the calibration assistant function.
+#' Internal function to provide parallel processing support to the
+#'  calibration assistant function.
+#'
 #' @param this.sim a numeric denoting which parameter combination to be tried.
-#' @param dycd.wd working directory where input files (including the bat file) to DYRESM-CAEDYM are stored.
+#' @param dycd.wd working directory where input files (including the bat file)
+#'  to DYRESM-CAEDYM are stored.
 #'
 #' @importFrom parallel detectCores makeCluster stopCluster clusterExport
 #' @importFrom R.utils copyDirectory
@@ -14,16 +17,20 @@ run_iteration <- function(this.sim, dycd.wd) {
   # id folder to use
   dir.this <- paste0(dycd.wd,'/core', core)
 
-  # copy the parameters files from the base model folder into the iteration's folder
-  files.params <- list.files(path = dycd.wd, pattern = '.*\\.(par|chm|bio|sed)$',
-                             recursive = FALSE, include.dirs = TRUE, full.names = TRUE)
+  # copy the parameters files from the base model folder into the
+  # iteration's folder
+  files.params <- list.files(path = dycd.wd,
+                             pattern = '.*\\.(par|chm|bio|sed)$',
+                             recursive = FALSE,
+                             include.dirs = TRUE, full.names = TRUE)
   file.copy(files.params, dir.this, overwrite = TRUE)
 
   #---
   # change the parameter values in the input files
   #---
-  for(m in 1:ncol(para.df)){
-    change_input_file(input_file = paste0(dir.this, "/", para.raw$Input_file[m]),
+  for(m in seq_len(ncol(para.df))){
+    change_input_file(input_file = paste0(dir.this, "/",
+                                          para.raw$Input_file[m]),
                       row_no = para.raw$Line_NO[m],
                       new_value = para.df[this.sim, m])
   }
@@ -50,14 +57,16 @@ run_iteration <- function(this.sim, dycd.wd) {
   }
 
   if (!TRUE %in% grepl("END: LAKE SIMULATION",out)) {
-    warning(paste0("Simulation No.",this.sim," did not complete successfully.\n"))
+    warning(paste0("Simulation No.",
+                   this.sim,
+                   " did not complete successfully.\n"))
   }
 
   # copy the finished nc file for later processing (if needed)
   file.copy(from = paste0(dir.this,"/DYsim.nc"),
             to = paste0(dir.output,"/DYsim_",this.sim,".nc"))
 
-  ### ! can also add additional model processing here and write to the output folder,
-  ###   to take advantage of parallel speed if wanted
+# can also add additional model processing here and write to the output folder,
+# to take advantage of parallel speed if wanted
 
 } # end per core function

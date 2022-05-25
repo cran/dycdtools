@@ -2,12 +2,12 @@
 % Please edit documentation in R/Fun_Contour-plot_sim_obs.R
 \name{plot_cont_comp}
 \alias{plot_cont_comp}
-\title{Contour plot of a variable simulation, with observed data shown as dots in the generated contour plot.}
+\title{Contour plot of DYRESM-CAEDYM simulation outputs of a water quality variable,
+ with observed data shown as dots in the generated contour plot.}
 \usage{
 plot_cont_comp(
   sim,
   obs,
-  file.name,
   sim.start,
   sim.end,
   plot.start,
@@ -16,57 +16,59 @@ plot_cont_comp(
   min.depth,
   max.depth,
   by.value,
-  nlevels
+  nlevels = 20
 )
 }
 \arguments{
-\item{sim}{a matrix of simulated variables that have been interpolated}
+\item{sim}{a matrix of simulated variables. This matrix can be generated
+by running the "interpol" function.}
 
-\item{obs}{observed values of variable.}
+\item{obs}{a data frame having three columns to describe observed values of
+a water quality variable. These three columns are 'Date' (as '\%Y-\%m-\%d'),
+'Depth', and the designated variable name which can be found from the
+var.name column of 'data(output_name)'.
+An example of such a data frame can be found with 'data(obs_temp)'}
 
-\item{file.name}{the file path to save the generated contour figure.}
+\item{sim.start, sim.end}{the start and end dates of the simulation period
+for the DYRESM-CAEDYM model run of interest.
+The date format must be "\%Y-\%m-\%d".}
 
-\item{sim.start, sim.end}{the start and end of the simulation period for the DYRESM-CAEDYM model run of interest. The date format must be "\%Y-\%m-\%d".}
-
-\item{plot.start, plot.end}{the start and end of the plot period, in the format of "\%Y-\%m-\%d"}
+\item{plot.start, plot.end}{the start and end dates of the period to
+be plotted, in the format of "\%Y-\%m-\%d".}
 
 \item{legend.title}{the legend title of the contour figure.}
 
-\item{min.depth, max.depth, by.value}{minimum and maximum depth used to be the start of y axis of the contour plot, at the increment of by.value.}
+\item{min.depth, max.depth, by.value}{minimum and maximum depths used to be
+the start of y axis of the contour plot, at the increment of by.value.}
 
-\item{nlevels}{a set of levels which are used to partition the range of simulation variable.}
+\item{nlevels}{Number of levels which are used to partition the range of
+simulation variable.}
 }
 \value{
 This function returns a filled.contour object.
 }
 \description{
-Contour plot a matrix of a bio-geochemical variable values, which can be generated through "interpol" function.
+Contour plot a matrix of values of a water quality variable.
 }
 \examples{
-# extract simulated temperature values from DYRESM-CAEDYM simulation file
- var.values<-ext_output(dycd.output=system.file("extdata", "dysim.nc", package = "dycdtools"),
-                       var.extract=c("TEMP"))
+obs <- data.frame(Date = c(rep('2020-01-01', 6), rep('2020-01-02', 6)),
+                  Depth = rep(0:5, 2),
+                  TEMP = rep(29:24,2))
 
-  for(i in 1:length(var.values)){
-     expres<-paste0(names(var.values)[i],"<-data.frame(var.values[[",i,"]])")
-     eval(parse(text=expres))
-  }
+sim <- matrix(c(28,28,28,27,25,24,12,13,14,15,16,17),
+              nrow = 6,
+              ncol = 2)
 
-# interpolate temperature for depths from 0 to 13 m at increment of 0.5 m
-  temp.interpolated<-interpol(layerHeights = dyresmLAYER_HTS_Var,
-                             var = dyresmTEMPTURE_Var,
-                             min.dept = 0,max.dept = 13,by.value = 0.5)
-
-  data(obs_temp)
-# contour plot of temperature simulations with observed data shown as colour-coded dots
-  p <- plot_cont_comp(sim=temp.interpolated,
-                 obs=obs_temp,
-                 sim.start = "2017-06-06",
-                 sim.end = "2017-06-15",
-                 plot.start="2017-06-06",
-                 plot.end="2017-06-15",
-                 legend.title="T \u00B0C",
-                 min.depth=0,max.depth=13,by.value=0.5,
+# contour plot of temperature simulations
+# with observed data shown as colour-coded dots
+  p <- plot_cont_comp(sim = sim,
+                 obs = obs,
+                 sim.start = "2020-01-01",
+                 sim.end = "2020-01-02",
+                 plot.start = "2020-01-01",
+                 plot.end = "2020-01-02",
+                 legend.title = "T \u00B0C",
+                 min.depth=0, max.depth=5, by.value=1,
                  nlevels=20)
 
  p
